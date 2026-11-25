@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QueueSense - Smart Queue Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <a class="logo" href="{{ url_for('home') }}">Queue<span>Sense</span></a>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('predict') }}">Predict</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Queue<span>Sense</span></h1>
+      <p class="tagline">Smart Queue Predictor</p>
+      <p>Tired of waiting in line without knowing how long it will take? Enter the number of people waiting,
+         the active counters and the average service time. A Machine Learning model will estimate your waiting time.</p>
+      <a class="btn" href="{{ url_for('predict') }}">Start Prediction</a>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>1. Enter details</h3>
+        <p>People waiting, active counters and average service time per person.</p>
+      </div>
+      <div class="card">
+        <h3>2. Model predicts</h3>
+        <p>A Linear Regression model trained with Scikit-learn estimates the waiting time.</p>
+      </div>
+      <div class="card">
+        <h3>3. See the result</h3>
+        <p>Get the waiting time in minutes, the crowd status and a simple explanation.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>QueueSense - Mini project using Python, Flask and Scikit-learn</footer>
+</body>
+</html>

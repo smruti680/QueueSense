@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predict - QueueSense</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <a class="logo" href="{{ url_for('home') }}">Queue<span>Sense</span></a>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('predict') }}">Predict</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2>Predict Waiting Time</h2>
+
+    <div class="card">
+      <form id="predict-form" method="POST" action="{{ url_for('predict') }}" novalidate>
+        <label for="people">Number of people waiting</label>
+        <input type="number" id="people" name="people" min="0" max="200" step="1"
+               placeholder="e.g. 20" value="{{ form.get('people', '') }}">
+
+        <label for="counters">Number of active counters</label>
+        <input type="number" id="counters" name="counters" min="1" max="20" step="1"
+               placeholder="e.g. 2" value="{{ form.get('counters', '') }}">
+
+        <label for="service_time">Average service time per person (minutes)</label>
+        <input type="number" id="service_time" name="service_time" min="0.5" max="30" step="0.5"
+               placeholder="e.g. 3" value="{{ form.get('service_time', '') }}">
+
+        <p id="error-box" class="error" {% if not error %}hidden{% endif %}>{{ error }}</p>
+
+        <div class="buttons">
+          <button type="submit" class="btn">Predict Waiting Time</button>
+          <a class="btn btn-light" href="{{ url_for('predict') }}">Clear</a>
+        </div>
+      </form>
+    </div>
+
+    {% if result %}
+    <div class="card result">
+      <h3>Estimated Waiting Time</h3>
+      <p class="minutes">{{ result.minutes }} <span>minutes</span></p>
+      <p>Crowd status: <span class="badge {{ result.css }}">{{ result.status }}</span></p>
+      <h4>How was this predicted?</h4>
+      <p>{{ result.explanation }}</p>
+      <p class="note">Crowd status rule: Low = up to 10 min, Medium = 11 to 30 min, High = more than 30 min.</p>
+    </div>
+    {% endif %}
+  </main>
+
+  <footer>QueueSense - Mini project using Python, Flask and Scikit-learn</footer>
+
+  <script>
+    // Check the inputs in the browser before sending them to the server
+    function check(id, label, min, max, whole) {
+      var text = document.getElementById(id).value.trim();
+      if (text === "") return label + " is required.";
+      var value = Number(text);
+      if (isNaN(value)) return label + " must be a number.";
+      if (whole && !Number.isInteger(value)) return label + " must be a whole number.";
+      if (value < min || value > max) return label + " must be between " + min + " and " + max + ".";
+      return "";
+    }
+
+    document.getElementById("predict-form").addEventListener("submit", function (event) {
+      var message =
+        check("people", "Number of people waiting", 0, 200, true) ||
+        check("counters", "Number of active counters", 1, 20, true) ||
+        check("service_time", "Average service time", 0.5, 30, false);
+
+      var box = document.getElementById("error-box");
+      if (message) {
+        event.preventDefault();      // stop the form from being sent
+        box.textContent = message;
+        box.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>
